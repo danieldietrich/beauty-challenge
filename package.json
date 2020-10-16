@@ -1,0 +1,46 @@
+{
+  "name": "beauty-challenge",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": ".",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.8",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-scripts": "3.4.3",
+    "@tailwindcss/ui": "^0.6.2",
+    "autoprefixer": "^10.0.1",
+    "concurrently": "^5.3.0",
+    "cross-env": "^7.0.2",
+    "cssnano": "^4.1.10",
+    "postcss": "^8.1.1",
+    "postcss-cli": "^8.1.0",
+    "tailwindcss": "^1.9.2"
+  },
+  "scripts": {
+    "start": "cross-env NODE_ENV=development concurrently \"npm run build:css -- --watch\"  \"react-scripts start\"",
+    "clean": "rm -fr build",
+    "build": "cross-env NODE_ENV=production npm run build:css ; react-scripts build",
+    "build:css": "postcss src/styles.tailwind.css -o src/styles.css",
+    "deploy": "git subtree push --prefix build origin gh-pages",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
