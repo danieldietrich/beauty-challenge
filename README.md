@@ -1,11 +1,11 @@
 # Beautify Challenge
 
-A Twitter game.
+Source code of the [Beauty Challenge](https://twitter.com/danieldietrich/status/1317198127632420870) game [beauty-challenge.arrowjs.dev](https://beautify-challenge.arrowjs.dev/).
 
 ## Development
 
 1. Develop `npm start`
 2. Build for production `npm run clean && npm run build`
-3. Commit & push changes (this is needed because the deployment dir `/build` is a git substree)
-4. Deploy build to gh-pages `npm run deploy`
+3. Commit & push changes
+4. Deploy build to gh-pages `npm run deploy` (pushes the git subtree `/build` to gh-pages)
 ```
