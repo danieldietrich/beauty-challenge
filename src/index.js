@@ -109,7 +109,7 @@ function calculateShade(rad, rot) {
 
 const Logo = React.forwardRef(({height, outerColor, innerColor, arrowColor, leftShade, rightShade}, ref) => {
   return (
-    <svg ref={ref} className="mx-auto max-w-xs" xmlns="http://www.w3.org/2000/svg" height={height} viewBox="-1800 -3118 3600 3118">
+    <svg ref={ref} className="mx-auto max-w-xs" xmlns="http://www.w3.org/2000/svg" width="100%" height={height} viewBox="-1800 -3118 3600 3118">
       <path d="M0-15e2v1e3L-866 0z" style={{fill: arrowColor, opacity: leftShade}} />
       <path d="M0-15e2v1e3L866 0z" style={{fill: arrowColor, opacity: rightShade}} />
       <path d="M0-2118v618L-866 0h-357z" style={{fill: innerColor, opacity: leftShade}} />
