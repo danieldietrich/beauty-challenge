@@ -1,6 +1,8 @@
 # Beautify Challenge
 
-Source code of the [Beauty Challenge](https://twitter.com/danieldietrich/status/1317198127632420870) game [beauty-challenge.arrowjs.dev](https://beautify-challenge.arrowjs.dev/).
+Source code of the [Beauty Challenge](https://twitter.com/danieldietrich/status/1317198127632420870) game
+
+Play it here: [beauty-challenge.arrowjs.dev](https://beauty-challenge.arrowjs.dev/)
 
 ## Development
 
