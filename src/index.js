@@ -107,32 +107,32 @@ function calculateShade(rad, rot) {
   return Math.min(1, x * x * x + 0.5).toFixed(2) // x^3 to lower contrast, + 0.5 to increase light intensity
 }
 
-const Logo = React.forwardRef(({height, outerColor, innerColor, arrowColor, leftShade, rightShade}, ref) => {
+const Logo = React.forwardRef(({height, outerColor, innerColor, arrowColor, leftShade, rightShade, onOuterColor, onArrowColor}, ref) => {
   return (
     <svg ref={ref} className="mx-auto max-w-xs" xmlns="http://www.w3.org/2000/svg" width="100%" height={height} viewBox="-1800 -3118 3600 3118">
-      <path d="M0-15e2v1e3L-866 0z" style={{fill: arrowColor, opacity: leftShade}} />
-      <path d="M0-15e2v1e3L866 0z" style={{fill: arrowColor, opacity: rightShade}} />
+      <path onClick={onArrowColor} d="M0-15e2v1e3L-866 0z" style={{fill: arrowColor, opacity: leftShade}} />
+      <path onClick={onArrowColor} d="M0-15e2v1e3L866 0z" style={{fill: arrowColor, opacity: rightShade}} />
       <path d="M0-2118v618L-866 0h-357z" style={{fill: innerColor, opacity: leftShade}} />
       <path d="M0-2118v618L866 0h357z" style={{fill: innerColor, opacity: rightShade}} />
-      <path d="M0-3118v1e3L-1223 0h-577z" style={{fill: outerColor, opacity: leftShade}} />
-      <path d="M0-3118v1e3L1223 0h577z" style={{fill: outerColor, opacity: rightShade}} />
+      <path onClick={onOuterColor} d="M0-3118v1e3L-1223 0h-577z" style={{fill: outerColor, opacity: leftShade}} />
+      <path onClick={onOuterColor} d="M0-3118v1e3L1223 0h577z" style={{fill: outerColor, opacity: rightShade}} />
     </svg>
   )
 })
 
-function ColorPicker({label, color, setColor, colors}) {
+const ColorPicker = React.forwardRef(({label, color, setColor, colors}, ref) => {
   return (
     <div className="flex flex-col">
       <fieldset>
         <legend className={["block text-sm font-medium", colors.inputLabel].join(' ')}>{label}</legend>
         <div className="flex mt-1">
-          <input type="color" value={color} onKeyDown={(e) => handleKey(e, setColor)} onChange={(e) => setColor(e.target.value)} className={["mr-3 w-12 h-10 md:w-8 md:h-8 appearance-none outline-none rounded-md overflow-hidden border", colors.border, colors.borderFocus, colors.bg].join(' ')} />
+          <input ref={ref} type="color" value={color} onKeyDown={(e) => handleKey(e, setColor)} onChange={(e) => setColor(e.target.value)} className={["mr-3 w-12 h-10 md:w-8 md:h-8 appearance-none outline-none rounded-md overflow-hidden border", colors.border, colors.borderFocus, colors.bg].join(' ')} />
           <input type="text" value={color} onKeyDown={(e) => handleKey(e, setColor)} onChange={(e) => setColor(e.target.value)} className={["form-input w-full h-10 md:w-28 md:h-8 appearance-none outline-none rounded-md overflow-hidden border", colors.border, colors.borderFocus, colors.inputText, colors.inputTextFocus, colors.inputTextPlaceholder, colors.inputBg, colors.inputBgHover, colors.inputBgFocus].join(' ')} placeholder="#rrggbb" />
         </div>
       </fieldset>
     </div>
   )
-}
+})
 
 const initialOuterColor = '#7f7f7f'
 const initialArrowColor = '#7f7f7f'
@@ -191,6 +191,11 @@ const themes = {
   }
 }
 
+function openColorPicker(ref) {
+  const e = new MouseEvent('click', { view: window, bubbles: true, cancleable: true })
+  ref.dispatchEvent(e)
+}
+
 function App() {
   const [mode, setMode] = useDarkMode()
   const colors = themes[mode]
@@ -198,19 +203,23 @@ function App() {
   const innerColor = (mode === 'dark') ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)'
   const [arrowColor, setArrowColor] = useQueryParam('arrow-color', initialArrowColor) // TODO: use query param
   const logoRef = useRef()
+  const outerColorRef = useRef()
+  const arrowColorRef = useRef()
   const [windowX, windowY] = useMousePosition()
   useWindowSize() // triggeres recalculation if logo size changes
   const rad = calculateAngle(logoRef, windowX, windowY)
   const signum = (mode === 'dark') ? 1 : -1
   const rightShade = calculateShade(signum * rad, Math.PI / 3)
   const leftShade = calculateShade(signum * rad, -Math.PI / 3)
+  const editOuterColor = () => openColorPicker(outerColorRef.current)
+  const editArrowColor = () => openColorPicker(arrowColorRef.current)
   return (
     <div className="min-h-screen flex">
       <main className={["flex flex-col justify-center w-full", colors.bg].join(' ')}>
-        <Logo ref={logoRef} height='100%' outerColor={outerColor} innerColor={innerColor} arrowColor={arrowColor} leftShade={leftShade} rightShade={rightShade} />
+        <Logo ref={logoRef} height='100%' outerColor={outerColor} innerColor={innerColor} arrowColor={arrowColor} leftShade={leftShade} rightShade={rightShade} onOuterColor={editOuterColor} onArrowColor={editArrowColor} />
       </main>
       <div className={["relative max-w-sm w-full md:w-72 flex flex-col flex-shrink-0 z-40", colors.bgNav].join(' ')}>
-        <div class="absolute top-0 right-0 m-1">
+        <div className="absolute top-0 right-0 m-1">
           <button onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')} className="relative flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600" aria-label="Close sidebar">
             <div className={["absolute top-0 right-0 transform transition-all ease-in-out duration-500 sm:duration-700", (mode === 'dark' ? 'opacity-100' : 'opacity-0')].join(' ')}>
               <svg className={["h-6 w-6 transition-opacity ease-in-out duration-500 sm:duration-700", (mode === 'dark' ? 'opacity-100 rotate-0' : 'opacity-0 rotate-180'), colors.modeButtonText, colors.modeButtonTextHover].join(' ')} stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -236,11 +245,11 @@ function App() {
           </div>
           <aside className="px-4 space-y-4">
             <div className={["landscape:hidden w-full p-2 rounded-md overflow-hidden border", colors.border, colors.bg].join(' ')}>
-              <Logo height='100' outerColor={outerColor} innerColor={innerColor} arrowColor={arrowColor} leftShade={leftShade} rightShade={rightShade} />
+              <Logo height='100' outerColor={outerColor} innerColor={innerColor} arrowColor={arrowColor} leftShade={leftShade} rightShade={rightShade} onOuterColor={editOuterColor} onArrowColor={editArrowColor} />
             </div>
             {[
-                { label: 'Outer color', color: outerColor, setColor: setOuterColor },
-                { label: 'Arrow color', color: arrowColor, setColor: setArrowColor },
+                { ref: outerColorRef, label: 'Outer color', color: outerColor, setColor: setOuterColor },
+                { ref: arrowColorRef, label: 'Arrow color', color: arrowColor, setColor: setArrowColor },
             ].map(props => <ColorPicker key={props.label} {...props} colors={colors} />)}
           </aside>
         </div>
