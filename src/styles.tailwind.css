@@ -9,11 +9,3 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 input[type="color"]::-webkit-color-swatch {
 	border: none;
 }
-
-/* support path click events */
-svg {
-    pointer-events: none;
-}
-path{
-    pointer-events: auto;
-}
