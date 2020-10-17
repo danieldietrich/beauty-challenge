@@ -45,22 +45,26 @@ function useWindowSize() {
 
 // Custom hook for reading/writing browser's location query parameters
 function useQueryParam(key, defaultValue) {
-  const param = new URLSearchParams(location.search).get(key)
-  const [value, setValue] = useState(param === null ? defaultValue : param)
+  const [value, setValue] = useState(() => {
+    const param = new URLSearchParams(location.search).get(key)
+    return param === null ? defaultValue : param
+  })
+  const lazyValue = useRef(null) // prevents outdated value from being captured by arrow function below
   const queued = useRef(false) // flood protection of browser history, 100 changes per 30 sec allowed
   useLayoutEffect(() => {
+    lazyValue.current = value
     if (!queued.current) {
       queued.current = true
       setTimeout(() => {
         if (queued.current) {
           const queryParams = new URLSearchParams(location.search)
-          queryParams.set(key, value)
+          queryParams.set(key, lazyValue.current)
           history.replaceState(null, null, "?" + queryParams.toString())
           queued.current = false
         }
       }, 500) // less often then 3 times per second
     }
-  }, [key, value, queued])
+  }, [key, value, lazyValue, queued])
   return [value, setValue]
 }
 
