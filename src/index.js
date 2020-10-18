@@ -196,8 +196,9 @@ const themes = {
 }
 
 function openColorPicker(ref) {
-  const e = new MouseEvent('click', { view: window, bubbles: true, cancleable: true })
+  const e = new MouseEvent('click', { view: window, bubbles: true, cancleable: true, target: ref })
   ref.dispatchEvent(e)
+  ref.focus()
 }
 
 function App() {
@@ -223,7 +224,7 @@ function App() {
         <Logo ref={logoRef} height='100%' outerColor={outerColor} innerColor={innerColor} arrowColor={arrowColor} leftShade={leftShade} rightShade={rightShade} onOuterColor={editOuterColor} onArrowColor={editArrowColor} />
       </main>
       <div className={["relative max-w-sm w-full md:w-72 flex flex-col flex-shrink-0 z-40", colors.bgNav].join(' ')}>
-        <div className="absolute top-0 right-0 m-1">
+        <div className="absolute top-0 right-0 m-4">
           <button onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')} className="relative flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600" aria-label="Close sidebar">
             <div className={["absolute top-0 right-0 transform transition-all ease-in-out duration-500 sm:duration-700", (mode === 'dark' ? 'opacity-100' : 'opacity-0')].join(' ')}>
               <svg className={["h-6 w-6 transition-opacity ease-in-out duration-500 sm:duration-700", (mode === 'dark' ? 'opacity-100 rotate-0' : 'opacity-0 rotate-180'), colors.modeButtonText, colors.modeButtonTextHover].join(' ')} stroke="currentColor" fill="none" viewBox="0 0 24 24">
